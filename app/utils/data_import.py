@@ -3,7 +3,9 @@ import pandas as pd
 import redis
 import json
 
-def import_data_to_redis(excel_file='src/data/data.xlsx', redis_host='localhost', redis_port=6379, redis_db=0):
+
+
+def import_data_to_redis(excel_file='app/data/data.xlsx', redis_host='localhost', redis_port=6379, redis_db=0):
     df = pd.read_excel(excel_file)
   
     r = redis.Redis(host=redis_host, port=redis_port, db=redis_db)
@@ -24,6 +26,16 @@ def import_data_to_redis(excel_file='src/data/data.xlsx', redis_host='localhost'
     print("Data imported into Redis successfully.")
     return r
 
+def print_all_licence_types():
+    keys = r.keys("user:*")
+    licence_types = set()
+    for key in keys:
+        data = r.get(key)
+        if data:
+            user = json.loads(data)
+            licence_types.add(user.get("licenceType"))
+    print("All unique licence types:", licence_types)
+
 def get_user_from_redis(r, user_id):
     key = f"user:{user_id}"
     user_data = r.get(key)
@@ -32,8 +44,12 @@ def get_user_from_redis(r, user_id):
     # Decode bytes to string, then parse JSON
     return json.loads(user_data.decode())
 
+
+
 if __name__ == "__main__":
     r = import_data_to_redis()
     user_id = '13016'  # Replace with the actual Person ID you want to look up
     user_data = get_user_from_redis(r, user_id)
     print(user_data)
+    print("PAUL CAVANAGH")
+    print_all_licence_types()
