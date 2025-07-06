@@ -1,17 +1,14 @@
 import unittest
 from unittest.mock import patch, MagicMock
 import pandas as pd
-import sys
-import os
 
-# Import the dataImport module
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../src/utils')))
-from src.utils import dataImport
+# Import the data_import module from the new structure
+from app.utils import data_import
 
 class TestDataImport(unittest.TestCase):
 
-    @patch('dataImport.pd.read_excel')
-    @patch('dataImport.redis.Redis')
+    @patch('app.utils.data_import.pd.read_excel')
+    @patch('app.utils.data_import.redis.Redis')
     def test_import_data_to_redis(self, mock_redis_class, mock_read_excel):
         # Mock DataFrame
         data = {
@@ -34,7 +31,7 @@ class TestDataImport(unittest.TestCase):
         mock_redis_class.return_value = mock_redis
 
         # Call the actual function
-        dataImport.import_data_to_redis()
+        data_import.import_data_to_redis()
 
         # Check that set was called with correct arguments
         expected_key = 'user:1'
@@ -53,7 +50,7 @@ class TestDataImport(unittest.TestCase):
         mock_redis.set.assert_called_with(expected_key, json.dumps(expected_user_data))
 
 
-    @patch('dataImport.redis.Redis')
+    @patch('app.utils.data_import.redis.Redis')
     def test_read_user_from_redis(self, mock_redis_class):
         # Mock Redis instance
         mock_redis = MagicMock()
@@ -63,7 +60,7 @@ class TestDataImport(unittest.TestCase):
         expected_dict = {'personName': 'John Doe', 'nationality': 'Irish'}
         mock_redis.get.return_value = json.dumps(expected_dict).encode()
         user_id = '1'
-        result = dataImport.get_user_from_redis(mock_redis, user_id)
+        result = data_import.get_user_from_redis(mock_redis, user_id)
         self.assertEqual(result['personName'], 'John Doe')
         self.assertEqual(result['nationality'], 'Irish')
 
