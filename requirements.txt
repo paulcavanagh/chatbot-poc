@@ -34,3 +34,4 @@ tzdata==2025.2
 urllib3==2.5.0
 uvicorn==0.35.0
 wrapt==1.17.2
+coverage==7.4.0
