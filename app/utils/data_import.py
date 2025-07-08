@@ -18,6 +18,7 @@ def import_data_to_redis(excel_file='app/data/data.xlsx', redis_host='localhost'
             'referenceNo': str(row['Reference No.']),
             'dateFrom': str(row['Date from']),
             'dateTo': str(row['Date to']),
+            'status':str(row['Status']),
             'inStatusSince': str(row['In status since']),
             'notes': str(row['Notes']),
             'season': str(row['Season']),
